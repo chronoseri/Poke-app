@@ -6,4 +6,10 @@
 .header {
   height: 50px;
   background-color: red;
+  
+}
+
+.title {
+ text-align: center;
+ margin: 0;
 }

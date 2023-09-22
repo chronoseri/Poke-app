@@ -12,7 +12,9 @@ interface Props {
 export default function Layout({ children }: Props) {
   return (
     <div className={styles.default}>
-      <div className={styles.header}></div>
+      <div className={styles.header}>
+        <h2 className={styles.title}>ポケモン図鑑</h2>
+      </div>
       <main>{children}</main>
     </div>
   );
