@@ -1,0 +1,9 @@
+.default {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  height: 50px;
+  background-color: red;
+}
