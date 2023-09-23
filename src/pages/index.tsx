@@ -11,28 +11,28 @@ export default function Home() {
   const getAllPokemons = async () => {
     const api = new PokemonClient();
     const pokemons = await api.listPokemons(0, 20);
-    createPokemonObject(pokemons.results);
+    pokemons.results.forEach((p) => {
+      console.log(p.name);
+    });
+    await createPokemonObject(pokemons.results);
   };
 
-  const createPokemonObject = (results: NamedAPIResource[]) => {
+  const createPokemonObject = async (results: NamedAPIResource[]) => {
     const api = new PokemonClient();
-    results.forEach((result) => {
-      const pokemon = api.getPokemonByName(result.name);
-      pokemon.then((data) => {
-        const newList: PokemonInfo = {
-          id: data.id,
-          name: data.name,
-          image: data.sprites.other!["official-artwork"].front_default!,
-          type: data.types[0].type.name,
-        };
-        setAllPokemons((currentList) => [...currentList, newList]);
-      });
-    });
+    for (const res of results) {
+      const pokemon = await api.getPokemonByName(res.name);
+      const newList: PokemonInfo = {
+        id: pokemon.id,
+        name: pokemon.name,
+        image: pokemon.sprites.other!["official-artwork"].front_default!,
+        type: pokemon.types[0].type.name,
+      };
+      setAllPokemons((currentList) => [...currentList, newList]);
+    }
   };
 
   useEffect(() => {
     getAllPokemons();
-    setAllPokemons(allPokemons.toSorted((a, b) => a.id - b.id));
   }, []);
 
   const list = allPokemons.map((pokemon) => (
