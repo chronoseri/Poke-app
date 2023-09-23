@@ -10,27 +10,25 @@ export default function Home() {
   const [allPokemons, setAllPokemons] = useState<PokemonInfo[]>([]);
 
   const onClickSearch = async (val: number) => {
-    setAllPokemons([]);
-    await fetchTwentyPokemons(val);
+    setAllPokemons(await fetchTwentyPokemons(val));
   };
 
   const fetchTwentyPokemons = async (offset: number = 1) => {
     const api = new PokemonClient();
-    for (let i = 0; i < 20; i++) {
-      const pokemon = await api.getPokemonById(i + offset);
-      const newList: PokemonInfo = {
+    const promises = Array.from({ length: 20 }, (_, i) =>
+      api.getPokemonById(i + offset).then((pokemon) => ({
         id: pokemon.id,
         name: pokemon.name,
         image: pokemon.sprites.other!["official-artwork"].front_default!,
         type: pokemon.types[0].type.name,
-      };
+      }))
+    );
 
-      setAllPokemons((currentList) => [...currentList, newList]);
-    }
+    return await Promise.all(promises);
   };
 
   useEffect(() => {
-    fetchTwentyPokemons();
+    onClickSearch(1);
   }, []);
 
   const list = allPokemons.map((pokemon) => (
