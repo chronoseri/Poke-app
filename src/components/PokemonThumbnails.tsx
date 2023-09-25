@@ -9,7 +9,7 @@ type Props = {
 
 const PokemonThumbnails: React.FC<Props> = ({ pokemon }) => {
   return (
-    <div className="thumb-container grass">
+    <div className={`thumb-container ${pokemon.type}`}>
       <div className="number">
         <small>#0{pokemon.id}</small>
       </div>
