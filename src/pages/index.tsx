@@ -14,17 +14,28 @@ export default function Home() {
     setAllPokemons(await fetchTwentyPokemons(val));
   };
 
+  const onClickMore = async () => {
+    const lastPokemon = allPokemons.findLast((value) => value);
+    if (lastPokemon) {
+      const nextPokemons = await fetchTwentyPokemons(lastPokemon?.id + 1);
+      setAllPokemons(allPokemons.concat(nextPokemons));
+    }
+  };
+
   const fetchTwentyPokemons = async (offset: number = 1) => {
     const api = new PokemonClient();
     const promises = Array.from({ length: 20 }, (_, i) =>
       api.getPokemonById(i + offset).then(async (pokemon) => {
-        const japanese = await translateToJapanese(pokemon.name, pokemon.types[0].type.name);
+        const japanese = await translateToJapanese(
+          pokemon.name,
+          pokemon.types[0].type.name
+        );
         return {
           id: pokemon.id,
           name: japanese.jpName,
           image: pokemon.sprites.other!["official-artwork"].front_default!,
           classType: pokemon.types[0].type.name,
-          jpType: japanese.jpType
+          jpType: japanese.jpType,
         };
       })
     );
@@ -55,6 +66,9 @@ export default function Home() {
         <IndexNumberSearch onClickSearch={onClickSearch}></IndexNumberSearch>
         <div className="pokemon-container">
           <div className="all-container">{list}</div>
+          <button type="button" onClick={onClickMore}>
+            もっと見る！
+          </button>
         </div>
       </div>
     </Layout>
