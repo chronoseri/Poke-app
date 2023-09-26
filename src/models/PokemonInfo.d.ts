@@ -2,5 +2,6 @@ interface PokemonInfo {
   id: number;
   name: string;
   image: string;
-  type: string;
+  classType: string;
+  jpType: string;
 }

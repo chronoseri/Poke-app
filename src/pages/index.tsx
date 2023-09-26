@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 import { NamedAPIResource, PokemonClient } from "pokenode-ts";
 import { IndexNumberSearch } from "@/components/IndexNumberSearch";
 import pokemonJson from "@/resources/pokemon.json";
-import pokemonTypeJson from "@/resources/pokemonType.json";
-import fs from "fs";
+import PokemonTypes from "@/models/PokemonType";
 
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState<PokemonInfo[]>([]);
@@ -18,12 +17,14 @@ export default function Home() {
   const fetchTwentyPokemons = async (offset: number = 1) => {
     const api = new PokemonClient();
     const promises = Array.from({ length: 20 }, (_, i) =>
-      api.getPokemonById(i + offset).then((pokemon) => {
+      api.getPokemonById(i + offset).then(async (pokemon) => {
+        const japanese = await translateToJapanese(pokemon.name, pokemon.types[0].type.name);
         return {
           id: pokemon.id,
-          name: pokemon.name,
+          name: japanese.jpName,
           image: pokemon.sprites.other!["official-artwork"].front_default!,
-          type: pokemon.types[0].type.name,
+          classType: pokemon.types[0].type.name,
+          jpType: japanese.jpType
         };
       })
     );
@@ -36,9 +37,7 @@ export default function Home() {
       (await pokemonJson.find((name) => name.en.toLowerCase() === enName)
         ?.ja) ?? "";
 
-    const data = fs.readFileSync("@/resources/pokemonType.json", "utf-8");
-    const types = JSON.parse(data) as PokemonTypes;
-    const jpType = types[enType];
+    const jpType = PokemonTypes[enType];
     return { jpName, jpType };
   };
 
