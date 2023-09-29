@@ -1,4 +1,3 @@
-import { PokemonInfo } from "@/models/PokemonInfo";
 import React from "react";
 import Image from "next/image";
 import { NamedAPIResource } from "pokenode-ts";
