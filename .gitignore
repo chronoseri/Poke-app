@@ -15,6 +15,7 @@
 # production
 /build
 /standalone
+/.firebase
 
 # misc
 .DS_Store
